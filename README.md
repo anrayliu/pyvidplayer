@@ -65,3 +65,4 @@ while True:
 video frame will be drawn. When ```force_draw``` is turned off, ```draw()``` will only draw something when there is a new frame in the video. 
 Otherwise, it does nothing. This is nice to save cpu, as you don't need to keep drawing the same frame over and over again. However, there will be a lot of
 flickering if stuff is drawn above or below the frame, which is why ```force_draw``` is defaulted to ```True```
+- Seeking backwards is a lot slower than seeking forwards
