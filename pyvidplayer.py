@@ -44,6 +44,7 @@ class Video:
     def restart(self):
         self.video.seek(0, relative=False, accurate=False)
         self.frames = 0
+        self.active = True
         
     def close(self):
         self.video.close_player()
@@ -58,7 +59,7 @@ class Video:
     
     def seek(self, seek_time, accurate=False):
         vid_time = self.video.get_pts()
-        if vid_time + seek_time < self.duration:
+        if vid_time + seek_time < self.duration and self.active:
             self.video.seek(seek_time)
             if seek_time < 0:
                 while (vid_time + seek_time < self.frames * self.frame_delay):
@@ -75,7 +76,7 @@ class Video:
             updated = True
         if updated:
             if val == "eof":
-                self.close()
+                self.active = False
             elif frame != None:
                 self.image = pygame.image.frombuffer(frame[0].to_bytearray()[0], frame[0].get_size(), "RGB")
         return updated
