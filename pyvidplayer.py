@@ -16,7 +16,7 @@ class Video:
             
             self.duration = info["duration"]
             self.frames = 0
-            self.frame_delay = 1 / float(info["frame rate"])
+            self.frame_delay = 1 / info["frame rate"]
             self.size = info["original size"]
             self.image = pygame.Surface((0, 0))
                         
