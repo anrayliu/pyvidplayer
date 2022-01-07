@@ -28,7 +28,7 @@ class Video:
         info = MediaInfo.parse(self.path).video_tracks[0]
         return {"path":self.path,
                 "name":splitext(basename(self.path))[0],
-                "frame rate":info.frame_rate,
+                "frame rate":float(info.frame_rate),
                 "frame count":info.frame_count,
                 "duration":info.duration / 1000,
                 "original size":(info.width, info.height),
