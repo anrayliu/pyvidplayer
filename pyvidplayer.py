@@ -1,3 +1,4 @@
+from typing import Tuple
 import pygame 
 from pymediainfo import MediaInfo
 from ffpyplayer.player import MediaPlayer
@@ -7,7 +8,7 @@ from errno import ENOENT
 
 
 class Video:
-    def __init__(self, path):
+    def __init__(self, path:str):
         self.path = path
         
         if exists(path):
@@ -50,14 +51,14 @@ class Video:
         self.video.close_player()
         self.active = False
     
-    def set_size(self, size):
+    def set_size(self, size:Tuple[int,int]):
         self.video.set_size(size[0], size[1])
         self.size = size
     
-    def set_volume(self, volume):
+    def set_volume(self, volume:float):
         self.video.set_volume(volume)
     
-    def seek(self, seek_time, accurate=False):
+    def seek(self, seek_time:float, accurate:bool=False):
         vid_time = self.video.get_pts()
         if vid_time + seek_time < self.duration and self.active:
             self.video.seek(seek_time)
@@ -81,7 +82,7 @@ class Video:
                 self.image = pygame.image.frombuffer(frame[0].to_bytearray()[0], frame[0].get_size(), "RGB")
         return updated
         
-    def draw(self, surf, pos, force_draw=True):
+    def draw(self, surf: pygame.Surface, pos:Tuple[int,int], force_draw:bool=True):
         if self.active:
             if self.update() or force_draw:
                 surf.blit(self.image, pos)
