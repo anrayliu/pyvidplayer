@@ -86,3 +86,6 @@ class Video:
         if self.active:
             if self.update() or force_draw:
                 surf.blit(self.image, pos)
+
+    def set_pause(self, paused:bool):
+        self.video.set_pause(paused)
