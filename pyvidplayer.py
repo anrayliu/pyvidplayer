@@ -61,7 +61,7 @@ class Video:
     def seek(self, seek_time:float, accurate:bool=False):
         vid_time = self.video.get_pts()
         if vid_time + seek_time < self.duration and self.active:
-            self.video.seek(seek_time)
+            self.video.seek(seek_time, accurate=accurate)
             if seek_time < 0:
                 while (vid_time + seek_time < self.frames * self.frame_delay):
                     self.frames -= 1
