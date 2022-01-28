@@ -46,6 +46,7 @@ class Video:
         self.video.seek(0, relative=False, accurate=False)
         self.frames = 0
         self.active = True
+        self.set_pause(False)
         
     def close(self):
         self.video.close_player()
@@ -89,3 +90,9 @@ class Video:
 
     def set_pause(self, paused:bool):
         self.video.set_pause(paused)
+
+    def stop(self):
+        self.set_pause(True)
+        self.image.fill((0,0,0))
+        self.active = False
+        self.seek(0, True)
