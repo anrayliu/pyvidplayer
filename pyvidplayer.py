@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Dict, Tuple
 import pygame 
 from pymediainfo import MediaInfo
 from ffpyplayer.player import MediaPlayer
@@ -25,7 +25,7 @@ class Video:
         else:
             raise FileNotFoundError(ENOENT, strerror(ENOENT), path)
         
-    def get_file_data(self):
+    def get_file_data(self) -> Dict:
         info = MediaInfo.parse(self.path).video_tracks[0]
         return {"path":self.path,
                 "name":splitext(basename(self.path))[0],
@@ -35,31 +35,31 @@ class Video:
                 "original size":(info.width, info.height),
                 "original aspect ratio":info.other_display_aspect_ratio[0]}
                 
-    def get_playback_data(self):
+    def get_playback_data(self) -> Dict:
         return {"active":self.active,
                 "time":self.video.get_pts(),
                 "volume":self.video.get_volume(),
                 "paused":self.video.get_pause(),
                 "size":self.size}
         
-    def restart(self):
+    def restart(self) -> None:
         self.video.seek(0, relative=False, accurate=False)
         self.frames = 0
         self.active = True
         self.set_pause(False)
         
-    def close(self):
+    def close(self) -> None:
         self.video.close_player()
         self.active = False
     
-    def set_size(self, size:Tuple[int,int]):
+    def set_size(self, size:Tuple[int,int]) -> None:
         self.video.set_size(size[0], size[1])
         self.size = size
     
-    def set_volume(self, volume:float):
+    def set_volume(self, volume:float) -> None:
         self.video.set_volume(volume)
     
-    def seek(self, seek_time:float, accurate:bool=False):
+    def seek(self, seek_time:float, accurate:bool=False) -> None:
         vid_time = self.video.get_pts()
         if vid_time + seek_time < self.duration and self.active:
             self.video.seek(seek_time, accurate=accurate)
@@ -67,10 +67,11 @@ class Video:
                 while (vid_time + seek_time < self.frames * self.frame_delay):
                     self.frames -= 1
             
-    def toggle_pause(self):
+    def toggle_pause(self) -> bool:
         self.video.toggle_pause()
+        return self.video.get_paused()
         
-    def update(self):
+    def update(self) -> bool:
         updated = False
         while self.video.get_pts() > self.frames * self.frame_delay:
             frame, val = self.video.get_frame()
@@ -83,15 +84,15 @@ class Video:
                 self.image = pygame.image.frombuffer(frame[0].to_bytearray()[0], frame[0].get_size(), "RGB")
         return updated
         
-    def draw(self, surf: pygame.Surface, pos:Tuple[int,int], force_draw:bool=True):
+    def draw(self, surf: pygame.Surface, pos:Tuple[int,int], force_draw:bool=True) -> None:
         if self.active:
             if self.update() or force_draw:
                 surf.blit(self.image, pos)
 
-    def set_pause(self, paused:bool):
+    def set_pause(self, paused:bool) -> None:
         self.video.set_pause(paused)
 
-    def stop(self):
+    def stop(self) -> None:
         self.set_pause(True)
         self.image.fill((0,0,0))
         self.active = False
