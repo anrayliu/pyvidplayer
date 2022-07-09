@@ -1,87 +1,87 @@
 import pygame 
-from pymediainfo import MediaInfo
+import os
 from ffpyplayer.player import MediaPlayer
-from os.path import exists, basename, splitext
-from os import strerror
+from pymediainfo import MediaInfo
 from errno import ENOENT
 
 
 class Video:
     def __init__(self, path):
-        self.path = path
+        if not os.path.exists(path):
+            raise FileNotFoundError(ENOENT, os.strerror(ENOENT), path)
         
-        if exists(path):
-            self.video = MediaPlayer(path)
-            info = self.get_file_data()
-            
-            self.duration = info["duration"]
-            self.frames = 0
-            self.frame_delay = 1 / info["frame rate"]
-            self.size = info["original size"]
-            self.image = pygame.Surface((0, 0))
-                        
-            self.active = True
-        else:
-            raise FileNotFoundError(ENOENT, strerror(ENOENT), path)
+        self.video = MediaPlayer(path)
+        info = MediaInfo.parse(path).video_tracks[0]
         
-    def get_file_data(self):
-        info = MediaInfo.parse(self.path).video_tracks[0]
-        return {"path":self.path,
-                "name":splitext(basename(self.path))[0],
-                "frame rate":float(info.frame_rate),
-                "frame count":info.frame_count,
-                "duration":info.duration / 1000,
-                "original size":(info.width, info.height),
-                "original aspect ratio":info.other_display_aspect_ratio[0]}
-                
-    def get_playback_data(self):
-        return {"active":self.active,
-                "time":self.video.get_pts(),
-                "volume":self.video.get_volume(),
-                "paused":self.video.get_pause(),
-                "size":self.size}
+        self.path = path 
+        self.name = os.path.splitext(os.path.basename(path))[0]
+        
+        self.frame_rate = float(info.frame_rate)
+        self.frame_count = int(info.frame_count)
+        self.frame_delay = 1 / self.frame_rate
+        self.duration = info.duration / 1000
+        self.original_size = (info.width, info.height)
+        
+        self.active = True
+        self.frame_num = 0
+        self.frame_surf = None
+        self.current_size = self.original_size
+        
+        self.alt_resize = pygame.transform.smoothscale
+        
+    def __del__(self):
+        self.video.close_player()
         
     def restart(self):
-        self.video.seek(0, relative=False, accurate=False)
-        self.frames = 0
+        self.video.seek(0, relative=False)
+        self.frame_num = 0
+        self.frame_surf = None
         self.active = True
         
-    def close(self):
-        self.video.close_player()
-        self.active = False
-    
     def set_size(self, size):
-        self.video.set_size(size[0], size[1])
-        self.size = size
+        self.video.set_size(*size)
+        self.current_size = size
     
     def set_volume(self, volume):
         self.video.set_volume(volume)
-    
-    def seek(self, seek_time, accurate=False):
-        vid_time = self.video.get_pts()
-        if vid_time + seek_time < self.duration and self.active:
-            self.video.seek(seek_time)
-            if seek_time < 0:
-                while (vid_time + seek_time < self.frames * self.frame_delay):
-                    self.frames -= 1
+        
+    def get_volume(self):
+        return self.video.get_volume()
+        
+    def get_paused(self):
+        return self.video.get_pause()
+        
+    def get_pos(self):
+        return self.video.get_pts()
             
     def toggle_pause(self):
         self.video.toggle_pause()
         
     def update(self):
         updated = False
-        while self.video.get_pts() > self.frames * self.frame_delay:
+        while self.video.get_pts() > self.frame_num * self.frame_delay:
             frame, val = self.video.get_frame()
-            self.frames += 1
+            self.frame_num += 1
             updated = True
         if updated:
             if val == "eof":
                 self.active = False
             elif frame != None:
-                self.image = pygame.image.frombuffer(frame[0].to_bytearray()[0], frame[0].get_size(), "RGB")
+                size = frame[0].get_size()
+                self.frame_surf = pygame.image.frombuffer(frame[0].to_bytearray()[0], size, "RGB")
+                if size != self.current_size:
+                    self.frame_surf = self.alt_resize(self.frame_surf, self.current_size)
         return updated
         
+    def seek(self, seek_time):
+        vid_time = self.video.get_pts()
+        if vid_time + seek_time < self.duration and self.active:
+            self.video.seek(seek_time)
+            while vid_time + seek_time < self.frame_num * self.frame_delay:
+                self.frame_num -= 1
+        
     def draw(self, surf, pos, force_draw=True):
-        if self.active:
-            if self.update() or force_draw:
-                surf.blit(self.image, pos)
+        if self.active and (self.update() or force_draw) and self.frame_surf != None:
+            surf.blit(self.frame_surf, pos)
+            return True
+        return False
