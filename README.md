@@ -1,12 +1,11 @@
 # pyvidplayer
-An extremely easy to use module that plays videos on Pygame 
-
+An extremely easy to use module that plays videos on Pygame. 
 
 BaralTech has a good tutorial ---> https://www.youtube.com/watch?v=Xu8SLkvFq8I&ab_channel=BaralTech
 
 # updated!
 This actually got more users than I thought, so I felt obligated to
-improve it a bit. Hang tight while I type up the new docs
+improve it a bit.
 
 changes:
 - a fallback resizing function since the one ffpyplayer uses is very buggy
