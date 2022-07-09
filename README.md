@@ -1,5 +1,8 @@
 # pyvidplayer
-An extremely easy to use module that plays videos on Pygame
+An extremely easy to use module that plays videos on Pygame 
+
+
+BaralTech has a good tutorial ---> https://www.youtube.com/watch?v=Xu8SLkvFq8I&ab_channel=BaralTech
 
 # updated!
 This actually got more users than I thought, so I felt obligated to
@@ -12,6 +15,8 @@ changes:
 - a few more clearly named variables
 - removed the close method since video resources are now released automatically
 - the draw method now returns true/false depending on if a frame has been drawn
+
+notice: Try to save the issues tab for genuine bugs with the script. If you just have a question, you can email me at anrayliu@gmail.com
 
 # **Example**
 ```
@@ -55,3 +60,34 @@ while True:
     
     pygame.display.update()
 ```
+
+# Properties
+The video class now has a bunch of new properties
+- ```path```
+- ```name```
+- ```frame_count```
+- ```frame_rate```
+- ```duration```
+- ```original_size```
+- ```current_size```
+- ```active``` - becomes false when the video finishes playing
+- ```frame_surf``` - current video frame as a pygame surface 
+- ```alt_resize``` - fallback resizing function in case the usual one fails. by default this is
+                     ```pygame.transform.smoothscale```, which is a bit cpu intensive, so you can switch it
+                     to ```pygame.transform.scale``` if you don't mind the video looking uglier
+                     
+# Functions
+- ```restart()```
+- ```set_size(size)``` - resizes the video with ffpyplayer's resize function. This is a lot 
+                         lighter on the cpu than the fallback function, but it sometimes doesn't work
+- ```set_volume(volume)```
+- ```get_volume()```
+- ```toggle_pause()```
+- ```get_paused()```
+- ```get_pos()```          - returns the current time in the video
+- ```seek(time)``` - moves forwards or backwards by time in the video.
+                   Note that when seeking backwards, the video will temporaily freeze. This seems to 
+                   be an issue with ffpyplayer, and I can't fix it (trust me I tried)
+- ```draw(surf, pos, force_draw=True)``` - draws the current video frame onto the given surface at the given position. If
+                                          ```force_draw``` is enabled, a surface will be drawn every time draw is called. If it's
+                                          disabled, a surface will only be drawn when a new frame from the video is made which saves cpu
