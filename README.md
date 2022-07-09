@@ -6,12 +6,12 @@ This actually got more users than I thought, so I felt obligated to
 improve it a bit. Hang tight while I type up the new docs
 
 changes:
-a fallback resizing function since the one ffpyplayer uses is very buggy
-get_file_data has been replaced with properties to increase performance
-get_playback_data has been split into individual functions to increase performance
-a few more clearly named variables
-removed the close method since video resources are now released automatically
-the draw method now returns true/false depending on if a frame has been drawn
+- a fallback resizing function since the one ffpyplayer uses is very buggy
+- get_file_data has been replaced with properties to increase performance
+- get_playback_data has been split into individual functions to increase performance
+- a few more clearly named variables
+- removed the close method since video resources are now released automatically
+- the draw method now returns true/false depending on if a frame has been drawn
 
 **Example**
 ```
