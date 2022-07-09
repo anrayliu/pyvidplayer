@@ -13,7 +13,7 @@ changes:
 - removed the close method since video resources are now released automatically
 - the draw method now returns true/false depending on if a frame has been drawn
 
-**Example**
+# **Example**
 ```
 import pygame
 from pyvidplayer import Video
@@ -23,21 +23,18 @@ win = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 
 #provide video class with the path to your video
-vid = Video("4.mp4")
-vid.set_size((1280, 720))
+vid = Video("vid.mp4")
 
 while True:
     key = None
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            #release video resources when done
             pygame.quit()
             exit()
         elif event.type == pygame.KEYDOWN:
             key = pygame.key.name(event.key)
     
     #your program frame rate does not affect video playback
-    #more info below
     clock.tick(60)
     
     if key == "r":
@@ -51,10 +48,9 @@ while True:
     elif key == "up":
         vid.set_volume(1.0)     #max volume
     elif key == "down":
-        vid.set_volume(0.0)     #min volume - mute
+        vid.set_volume(0.0)     #min volume
         
     #draws the video to the given surface, at the given position
-    #info on force draw below
     vid.draw(win, (0, 0), force_draw=False)
     
     pygame.display.update()
