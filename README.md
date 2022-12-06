@@ -3,17 +3,17 @@ An extremely easy to use module that plays videos on Pygame.
 
 BaralTech has a good tutorial ---> https://www.youtube.com/watch?v=Xu8SLkvFq8I&ab_channel=BaralTech
 
-# updated!
-This actually got more users than I thought, so I felt obligated to
-improve it a bit.
+# updated once again!
+There was an egregious bug that prevented active from turning false on some videos, which I barely fixed.
+Playing videos in Python is just very janky but hopefully this script can serve you well.
 
-changes:
-- a fallback resizing function since the one ffpyplayer uses is very buggy
-- get_file_data has been replaced with properties to increase performance
-- get_playback_data has been split into individual functions to increase performance
-- a few more clearly named variables
-- removed the close method since video resources are now released automatically
-- the draw method now returns true/false depending on if a frame has been drawn
+Changes:
+- fixed (hopefully) the active bug
+- changed some variables to internal use
+- added back the close function
+- added typing hints
+- added seperate pause and resume functions
+- significantly reduced console output (although unfortunately there's still some)
 
 notice: Try to save the issues tab for genuine bugs with the script. If you just have a question, you can email me at anrayliu@gmail.com
 
@@ -83,6 +83,8 @@ The video class now has a bunch of new properties
 - ```get_volume()```
 - ```toggle_pause()```
 - ```get_paused()```
+- ```pause()```
+- ```resume()```
 - ```get_pos()```          - returns the current time in the video
 - ```seek(time)``` - moves forwards or backwards by time in the video.
                    Note that when seeking backwards, the video will temporaily freeze. This seems to 
