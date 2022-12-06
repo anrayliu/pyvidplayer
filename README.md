@@ -80,14 +80,15 @@ The video class now has a bunch of new properties
 - ```restart()```
 - ```set_size(size)``` - resizes the video with ffpyplayer's resize function. This is a lot 
                          lighter on the cpu than the fallback function, but it sometimes doesn't work
-- ```set_volume(volume)```
+- ```set_volume(volume)``` - from 0.0 to 1.0
 - ```get_volume()```
 - ```toggle_pause()```
 - ```get_paused()```
 - ```pause()```
 - ```resume()```
-- ```get_pos()```          - returns the current time in the video
-- ```seek(time)``` - moves forwards or backwards by time in the video.
+- ```close()``` - releases video resources
+- ```get_pos()```          - returns the current time in the video in seconds
+- ```seek(time)``` - moves forwards or backwards by time in seconds in the video.
                    Note that when seeking backwards, the video will temporaily freeze. This seems to 
                    be an issue with ffpyplayer, and I can't fix it (trust me I tried)
 - ```draw(surf, pos, force_draw=True)``` - draws the current video frame onto the given surface at the given position. If
