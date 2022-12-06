@@ -4,11 +4,11 @@ An extremely easy to use module that plays videos on Pygame.
 BaralTech has a good tutorial ---> https://www.youtube.com/watch?v=Xu8SLkvFq8I&ab_channel=BaralTech
 
 # updated once again!
-There was an egregious bug that prevented active from turning false on some videos, which I barely fixed.
+There was an egregious bug that prevented ```active``` from turning false on some videos, which I barely fixed.
 Playing videos in Python is just very janky but hopefully this script can serve you well.
 
 Changes:
-- fixed (hopefully) the active bug
+- fixed (hopefully) the ```active``` bug
 - changed some variables to internal use
 - added back the close function
 - added typing hints
@@ -33,6 +33,7 @@ while True:
     key = None
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            vid.close()
             pygame.quit()
             exit()
         elif event.type == pygame.KEYDOWN:
