@@ -1,3 +1,6 @@
+# OUTDATED!
+Use this instead -> https://github.com/ree1261/pyvidplayer2
+
 # pyvidplayer
 An extremely easy to use module that plays videos on Pygame. 
 
